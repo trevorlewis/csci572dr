@@ -4,15 +4,18 @@ using Base.Test, Stage, Ollam, DataStructures
 # -------------------------------------------------------------------------------------------------------------------------
 # readers
 # -------------------------------------------------------------------------------------------------------------------------
-if false
+# if false
+if true
 l = 0
-for i in filelines("data/nus-sms/test.tsv.gz")
+# for i in filelines("data/nus-sms/test.tsv.gz")
+for i in filelines("data/nus-sms/test.tsv")
   l += 1
 end
 @expect l == 6717
 
 l = 0
-for i in lazy_map(x -> split(strip(x), '\t')[2], filelines("data/nus-sms/test.tsv.gz"))
+# for i in lazy_map(x -> split(strip(x), '\t')[2], filelines("data/nus-sms/test.tsv.gz"))
+for i in lazy_map(x -> split(strip(x), '\t')[2], filelines("data/nus-sms/test.tsv"))
   l += 1
   if (l == 6717)
     println("6717: ", i)

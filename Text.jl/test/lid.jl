@@ -1,10 +1,14 @@
 # -------------------------------------------------------------------------------------------------------------------------
 # LID
 # -------------------------------------------------------------------------------------------------------------------------
-train       = map(l -> split(chomp(l), '\t')[2], filelines("data/nus-sms/train.tsv.gz"))
-train_truth = map(l -> split(chomp(l), '\t')[1], filelines("data/nus-sms/train.tsv.gz"))
-test        = map(l -> split(chomp(l), '\t')[2], filelines("data/nus-sms/test.tsv.gz"))
-test_truth  = map(l -> split(chomp(l), '\t')[1], filelines("data/nus-sms/test.tsv.gz"))
+# train       = map(l -> split(chomp(l), '\t')[2], filelines("data/nus-sms/train.tsv.gz"))
+# train_truth = map(l -> split(chomp(l), '\t')[1], filelines("data/nus-sms/train.tsv.gz"))
+# test        = map(l -> split(chomp(l), '\t')[2], filelines("data/nus-sms/test.tsv.gz"))
+# test_truth  = map(l -> split(chomp(l), '\t')[1], filelines("data/nus-sms/test.tsv.gz"))
+train       = map(l -> split(chomp(l), '\t')[2], filelines("data/nus-sms/train.tsv"))
+train_truth = map(l -> split(chomp(l), '\t')[1], filelines("data/nus-sms/train.tsv"))
+test        = map(l -> split(chomp(l), '\t')[2], filelines("data/nus-sms/test.tsv"))
+test_truth  = map(l -> split(chomp(l), '\t')[1], filelines("data/nus-sms/test.tsv"))
 
 @info "train: $(length(train)), test: $(length(test))"
 for t in train
