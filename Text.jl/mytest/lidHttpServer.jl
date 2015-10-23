@@ -1,8 +1,6 @@
 using Text
 using Base.Test, Stage, Ollam, DataStructures
 using HttpServer
-using URIParser
-using Codecs
 
 # -------------------------------------------------------------------------------------------------------------------------
 # LID
@@ -13,7 +11,7 @@ using Codecs
 train       = map(l -> split(chomp(l), '\t')[2], filelines("data/text.tsv"))
 train_truth = map(l -> split(chomp(l), '\t')[1], filelines("data/text.tsv"))
 
-bkgmodel, fextractor, model = tc_train(train, train_truth, lid_iterating_tokenizer, mincount = 2, cutoff = 1e10, 
+bkgmodel, fextractor, model = tc_train(train, train_truth, lid_iterating_tokenizer, mincount = 2, cutoff = 1e10,
                                        trainer = (fvs, truth, init_model) -> train_mira(fvs, truth, init_model, iterations = 20, k = 2, C = 0.01, average = true),
                                        iteration_method = :eager)
 
@@ -30,14 +28,16 @@ end
 
 # -------------------------------------------------------------------------------------------------------------------------
 
-# HTTP Server to identify language from Request URI which is Base64 encoded and URI encoded
+# HTTP Server to identify language from PUT Request data
 
 http = HttpHandler() do req::Request, res::Response
-    text = unescape(req.resource)[2:end]
-    text = bytestring(decode(Base64, text))
-    println(text)
-    println(detectLang(text))
-    return Response(detectLang(text))
+  if req.method != "PUT"
+    return Response("{\"lang\": \"error - use PUT method\"}")
+  end
+  text = bytestring(req.data)
+  println(text)
+  println(detectLang(text))
+  return Response(string("{\"lang\": \"", detectLang(text), "\"}"))
 end
 http.events["error"]  = (client, err) -> println(err)
 http.events["listen"] = (saddr) -> println("Running on http://$saddr (Press CTRL+C to quit)")
