@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # preprocess the plain text files generated using WikiExtractor
 # by combining random 'n' lines of all the files into a single TSV file
@@ -9,7 +9,7 @@ num=1000
 for i in "$@"
 do
 case $i in
-	-f=*|--file=*)
+    -f=*|--file=*)
     file="${i#*=}"
     ;;
     -n=*|--num=*)
@@ -23,8 +23,21 @@ done
 
 rm -f $file
 
-while read line; do
-	sed 's/<doc id=\"//' $line"-text-format.xml" | sed 's/\" url=\"/\t/' | sed 's/\" title=\"/\t/' | sed 's/\">\s*/\t/' | sed 's/\s*<\/doc>//' | sed 's/^/'$line'\t/' > $line"-text.tmp"
-	shuf -n $num $line"-text.tmp" >> $file
-	rm -f $line"-text.tmp"
+while read lang; do
+	infile=$lang"-text-format.xml"
+    lc=$(wc -l < $infile)
+    for n in `seq 1 $num`; do
+        # get a random number between 1 and $lc
+        rnd=$RANDOM
+        let "rnd %= $lc"
+        ((rnd++))
+        # traverse file and find line number $rnd
+        i=0
+        while read -r line; do
+         ((i++))
+         [ $i -eq $rnd ] && break
+        done < $infile
+        # output random line
+        echo $line >> $file
+    done
 done < list.txt
