@@ -1,7 +1,5 @@
 #!/bin/sh
 
 while read line; do
-	tr '\n' ' ' < $line"-text.xml" > $line"-text.tmp"
-	sed 's/<\/doc> /<\/doc>\n/g' $line"-text.tmp" > $line"-text-format.xml"
-	rm $line"-text.tmp"
+	perl -pe 's/\n/ / if $_ == /<\/doc>/' $line"-text.xml" > $line"-text-format.xml"
 done < list.txt
