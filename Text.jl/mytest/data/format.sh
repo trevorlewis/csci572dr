@@ -38,9 +38,10 @@ while read lang; do
 	done
 	i=0
 	p=0
-	while read -r line; do
+	while IFS=$'\t' read -r -a myArray; do
 		if [ $i -eq ${array[$p]} ]; then
-			echo $line >> $file
+			printf "%s\t" "${myArray[@]}" >> $file
+			printf "\n" >> $file
 			((p++))
 			[ $p -eq ${#array[@]} ] && break
 		fi
