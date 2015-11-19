@@ -91,6 +91,29 @@ def main():
     for lang in lang_list:
         print lang + "\t" + str(precision_text[lang]) + "\t" + str(recall_text[lang]) + "\t" + str(fscore_text[lang])
     
+    count = dict()
+    total_words = dict()
+    total_chars = dict()
+    total_time_tika = dict()
+    total_time_text = dict()
+    for lang in lang_list:
+        count[lang] = 0.0
+        total_words[lang] = 0.0
+        total_chars[lang] = 0.0
+        total_time_tika[lang] = 0.0
+        total_time_text[lang] = 0.0
+    for line in data:
+        lang = line[1]
+        count[lang] += 1
+        total_words[lang] += float(line[6])
+        total_chars[lang] += float(line[7])
+        total_time_tika[lang] += float(line[3])
+        total_time_text[lang] += float(line[5])
+    print
+    print "Lang\tAvg_Words_Per_Article\tAvg_Chars_Per_Article\tAvg_Time_Tika\tAvg_Time_Text"
+    for lang in lang_list:
+        print lang + "\t" + str(total_words[lang]/count[lang]) + "\t" + str(total_chars[lang]/count[lang]) + "\t" + str(total_time_tika[lang]/count[lang]) + "\t" + str(total_time_text[lang]/count[lang])
+    print "*time in nano seconds"
 
 if __name__ == '__main__':
     main()
