@@ -6,7 +6,7 @@ delimiter=$'\t' # delimiter tab
 
 while IFS=$delimiter read -ra line; do
 	startTime=`date +%s%N`
-	json=`curl -s -X PUT -d "${line[4]}" $url`
+	json=`echo ${line[4]} | curl -s -X PUT -d @- $url`
 	endTime=`date +%s%N`
 
 	result=$(echo $json| cut -d'"' -f 4)
