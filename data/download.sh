@@ -1,12 +1,35 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # download and extract plain text from Wikipedia database XML dump using WikiExtractor
 
-while read line; do
-	wget "http://download.wikimedia.org/"$line"wiki/latest/"$line"wiki-latest-pages-articles.xml.bz2"
-	bzcat $line"wiki-latest-pages-articles.xml.bz2" | ./WikiExtractor.py -cb 10M -o extracted - --no-templates
-	rm -f $line"wiki-latest-pages-articles.xml.bz2"
-	find extracted -name '*bz2' -exec bunzip2 -c {} \; > $line"-text.xml"
-	rm -rf extracted
-	bzip2 $line"-text.xml"
-done < list.txt
+# Usage:
+#     download.sh [options]
+# Options:
+#     -l, --lang : languages file name
+# Example:
+#     download.sh -l=languages.txt
+
+languages="./languages.txt"
+
+for i in "$@"
+do
+case $i in
+    -l=*|--lang=*)
+    languages="${i#*=}"
+    ;;
+    *)
+    # unknown option
+    ;;
+esac
+done
+
+while read lang; do
+    if [ ! -f $lang".xml.bz2" ]; then
+        wget "http://download.wikimedia.org/"$lang"wiki/latest/"$lang"wiki-latest-pages-articles.xml.bz2" -O $lang".xml.bz2"
+    fi
+    if [ ! -f $lang"-text.xml" ]; then
+        bzcat $lang".xml.bz2" | ./WikiExtractor.py -cb 10M -o extracted - --no-templates
+        find extracted -name '*bz2' -exec bunzip2 -c {} \; > $lang"-text.xml"
+        rm -rf extracted
+    fi
+done < $languages
