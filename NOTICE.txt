@@ -1,0 +1,9 @@
+Apache Tika
+Copyright 2015 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+Wikipedia Extractor (https://github.com/bwbaugh/wikipedia-extractor):
+Copyright (c) 2009-2015. Giuseppe Attardi (attardi@di.unipi.it).
+Licensed under the GNU General Public License, version 3
